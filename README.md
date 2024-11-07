@@ -1,4 +1,4 @@
-```
+---
 title: Alzheimer
 emoji: 🐨
 colorFrom: indigo
@@ -7,7 +7,7 @@ sdk: docker
 pinned: false
 license: mit
 short_description: XGBoost and KNN Notebooks.
-```
+---
 
 # Alzheimer Disease Classification with XGBoost and KNN
 

@@ -1,4 +1,4 @@
-marimo
+marimo=0.9.15
 pandas
 numpy
 scipy==1.10.1

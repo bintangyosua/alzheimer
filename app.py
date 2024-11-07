@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.9.14"
+__generated_with = "0.9.15"
 app = marimo.App(width="full")
 
 
@@ -51,6 +51,7 @@ def __():
     import matplotlib.pyplot as plt
     import seaborn as sns
     import altair as alt
+    import pygwalker as pyg
 
     from sklearn.preprocessing import LabelEncoder, StandardScaler
     from sklearn.model_selection import train_test_split
@@ -88,6 +89,7 @@ def __():
         np,
         pd,
         plt,
+        pyg,
         sns,
         train_test_split,
         xgb,
@@ -248,7 +250,7 @@ def __(mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(df):
     correlation_matrix = df.corr()
     correlation_melted = correlation_matrix.reset_index().melt(id_vars='index')
@@ -256,7 +258,7 @@ def __(df):
     return correlation_matrix, correlation_melted
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(alt, correlation_melted):
     alt.Chart(correlation_melted).mark_rect().encode(
         x='Variable1:O',
@@ -285,14 +287,14 @@ def __(mo):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(df):
     X = df.drop('Diagnosis', axis=1)
     y = df['Diagnosis']
     return X, y
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(X, train_test_split, y):
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
     return X_test, X_train, y_test, y_train
@@ -318,7 +320,7 @@ def __(StandardScaler, X_test, X_train):
     return X_test_scaled, X_train_scaled, scaler
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(X_train_scaled):
     print(X_train_scaled)
     return
@@ -357,7 +359,7 @@ def __(mo, neighbors):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __(KNeighborsClassifier, X_train_scaled, neighbors, xgb, y_train):
     models = {
         "XGBoost": xgb.XGBClassifier(),
@@ -373,18 +375,13 @@ def __(KNeighborsClassifier, X_train_scaled, neighbors, xgb, y_train):
     return model, model_name, models
 
 
-@app.cell
-def __():
-    return
-
-
 @app.cell(hide_code=True)
 def __(mo):
     mo.md(r"""<!-- ### Decision Boundary Visualization -->""")
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # def dimensional_reduction(model, X_scaled):
     #     X_scaled = model.fit_transform(X_scaled)
@@ -393,7 +390,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # def decision_boundary(model, X_scaled, y, model_name, ax):
     #     """
@@ -438,7 +435,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # X_scaled = np.vstack((X_train_scaled, X_test_scaled))
 
@@ -455,7 +452,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # X_2d = {}
     # for dimred_name, dimred_model in manifold_models.items():
@@ -463,7 +460,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # decision_boundary_models = {
     #     'XGBoost': xgb.XGBClassifier(),
@@ -472,7 +469,7 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # fig, axes = plt.subplots(nrows=2, ncols=len(manifold_models), figsize=(15, 10))
 
@@ -492,13 +489,13 @@ def __():
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # df['Diagnosis'].value_counts()
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def __():
     # xg_boost_scatter_bar_chart = (
     #     alt.Chart(
@@ -662,11 +659,16 @@ def __(accuracy_score, alt, mo, pd, y_pred, y_test):
 def __(knn_accuracy, mo, xgb_accuracy):
     mo.md(
         f"""
-        ## 5. Kesimpulan
+        ## 4. Conclusion
 
-        Model dengan Xgboost mendapatkan akurasi hampir **95% ({xgb_accuracy})**, sedangkan KNN hanya memperoleh akurasi **{knn_accuracy}%**
+        Xgboost got accuration of almost **95% ({xgb_accuracy})**. On the other hand, KNN only **{knn_accuracy}%**
         """
     )
+    return
+
+
+@app.cell
+def __():
     return
 
 
