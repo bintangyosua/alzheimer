@@ -1,0 +1,17 @@
+marimo
+pandas
+numpy
+scipy==1.10.1
+
+matplotlib
+seaborn
+altair
+
+scikit-learn
+umap-learn
+xgboost
+
+# Or a specific version
+# marimo>=0.9.0
+
+# Add other dependencies as needed
