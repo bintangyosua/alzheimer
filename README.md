@@ -1,3 +1,14 @@
+```
+title: Alzheimer
+emoji: 🐨
+colorFrom: indigo
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+short_description: XGBoost and KNN Notebooks.
+```
+
 # Alzheimer Disease Classification with XGBoost and KNN
 
 This project aims to classify Alzheimer disease status using XGBoost and KNN machine learning algorithms. The interactive analysis and modeling pipeline is implemented using `marimo`, enabling visual and exploratory steps for understanding data and model performance.
