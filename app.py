@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.9.15"
+__generated_with = "0.9.32"
 app = marimo.App(width="full")
 
 
@@ -63,8 +63,6 @@ def __():
     from sklearn.manifold import TSNE, LocallyLinearEmbedding, MDS
     from imblearn.over_sampling import SMOTE
 
-    from umap import UMAP
-
     import xgboost as xgb
     return (
         ConfusionMatrixDisplay,
@@ -82,7 +80,6 @@ def __():
         SVC,
         StandardScaler,
         TSNE,
-        UMAP,
         accuracy_score,
         alt,
         classification_report,
@@ -375,7 +372,7 @@ def __(mo):
 
 @app.cell(hide_code=True)
 def __(mo):
-    neighbors = mo.ui.slider(3, 99, 2, 59)
+    neighbors = mo.ui.slider(3, 99, 2, 7)
     mo.md(f"""
         Enter number of neighbors for KNN (neighbors value): {neighbors}
     """)
@@ -396,36 +393,60 @@ def __():
 
 
 @app.cell
-def __():
-    # xgb_model = xgb.XGBClassifier()
+def __(GridSearchCV, X_train_scaled, xgb, y_train):
+    xgb_model = xgb.XGBClassifier()
 
-    # # Parameter Grid
-    # param_grid = {
-    #     'max_depth': [3, 6, 9],
-    #     'learning_rate': [0.01, 0.1, 0.2],
-    #     'n_estimators': [50, 100, 200],
-    #     'subsample': [0.8, 1],
-    #     'colsample_bytree': [0.8, 1],
-    # }
+    # Parameter Grid
+    param_grid = {
+        'max_depth': [3, 6, 9],
+        'learning_rate': [0.01, 0.1, 0.2],
+        'n_estimators': [50, 100, 200],
+        'subsample': [0.8, 1],
+        'colsample_bytree': [0.8, 1],
+    }
 
-    # # Grid Search
-    # grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, cv=3, scoring='accuracy', verbose=1)
-    # grid_search.fit(X_train_scaled, y_train)
+    # Grid Search
+    grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, cv=3, scoring='accuracy', verbose=1)
+    grid_search.fit(X_train_scaled, y_train)
 
-    # print("Best Params:", grid_search.best_params_)
-    # print("Best Score:", grid_search.best_score_)
-    return
+    print("Best Params:", grid_search.best_params_)
+    print("Best Score:", grid_search.best_score_)
+    return grid_search, param_grid, xgb_model
 
 
 @app.cell
-def __(KNeighborsClassifier, X_train_scaled, neighbors, xgb, y_train):
+def __(GridSearchCV, KNeighborsClassifier, X_train_scaled, y_train):
+    knn_model = KNeighborsClassifier()
+
+    knn_param_grid = {
+        'n_neighbors': [i for i in range(3, 100, 2)]
+    }
+
+    knn_grid_search = GridSearchCV(estimator=knn_model, param_grid=knn_param_grid, cv=3, scoring='accuracy', verbose=1)
+    knn_grid_search.fit(X_train_scaled, y_train)
+
+    print("Best Params:", knn_grid_search.best_params_)
+    print("Best Score:", knn_grid_search.best_score_)
+    return knn_grid_search, knn_model, knn_param_grid
+
+
+@app.cell
+def __(
+    KNeighborsClassifier,
+    X_train_scaled,
+    grid_search,
+    neighbors,
+    xgb,
+    y_train,
+):
     models = {
-        "XGBoost": xgb.XGBClassifier(),
+        "XGBoost": xgb.XGBClassifier(
+            colsample_bytree=grid_search.best_params_['colsample_bytree'],
+            learning_rate=grid_search.best_params_['learning_rate'],
+            max_depth=grid_search.best_params_['max_depth'],
+            n_estimators=grid_search.best_params_['n_estimators'],
+            subsample=grid_search.best_params_['subsample']),
         "KNN": KNeighborsClassifier(n_neighbors=neighbors.value),
-        # "SVC": SVC(),
-        # "Random Forest": RandomForestClassifier(),
-        # "Gradient Boosting": GradientBoostingClassifier(),
-        # "Extra Tree": ExtraTreesClassifier()
     }
 
     for model_name, model in models.items():
