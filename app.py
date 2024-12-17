@@ -411,7 +411,9 @@ def __(GridSearchCV, X_train_scaled, xgb, y_train):
 
     print("Best Params:", grid_search.best_params_)
     print("Best Score:", grid_search.best_score_)
-    return grid_search, param_grid, xgb_model
+
+    connector = 1
+    return connector, grid_search, param_grid, xgb_model
 
 
 @app.cell
@@ -434,11 +436,14 @@ def __(GridSearchCV, KNeighborsClassifier, X_train_scaled, y_train):
 def __(
     KNeighborsClassifier,
     X_train_scaled,
+    connector,
     grid_search,
     neighbors,
     xgb,
     y_train,
 ):
+    connector
+
     models = {
         "XGBoost": xgb.XGBClassifier(
             colsample_bytree=grid_search.best_params_['colsample_bytree'],
